@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="row mt-4">
+    <h2>Admin Dashboard</h2>
+    <div class="col-md-3 mt-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Doctors</h5>
+                <p class="card-text fs-3">{{ total_doctors }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mt-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Patients</h5>
+                <p class="card-text fs-3">{{ total_patients }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mt-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Appointments (Today)</h5>
+                <p class="card-text fs-3">{{ total_appointments }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mt-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total Revenue</h5>
+                <p class="card-text fs-3">${{ total_revenue }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-dark text-white">Pending Payments</div>
+            <ul class="list-group list-group-flush">
+                {% for bill in pending_bills %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ bill.patient.name }}
+                    <span class="badge bg-danger rounded-pill">${{ bill.amount }}</span>
+                </li>
+                {% else %}
+                <li class="list-group-item">No pending payments.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

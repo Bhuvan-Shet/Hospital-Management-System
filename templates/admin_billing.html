@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Manage Billing{% endblock %}
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-8">
+        <h2>Billing System</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateBillModal">Generate Bill</button>
+    </div>
+</div>
+<hr>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Bill ID</th>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bill in bills %}
+        <tr>
+            <td>#{{ bill.id }}</td>
+            <td>{{ bill.patient.name }}</td>
+            <td>{{ bill.date }}</td>
+            <td>${{ bill.amount }}</td>
+            <td>
+                {% if bill.status == 'Paid' %}
+                <span class="badge bg-success">Paid</span>
+                {% else %}
+                <span class="badge bg-danger">Pending</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if bill.status == 'Pending' %}
+                <form action="{{ url_for('mark_bill_paid', id=bill.id) }}" method="POST">
+                    <button type="submit" class="btn btn-sm btn-success">Mark Paid</button>
+                </form>
+                {% else %}
+                - 
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Generate Bill Modal -->
+<div class="modal fade" id="generateBillModal" tabindex="-1">
+    <div class="modal-dialog">
+    <form action="{{ url_for('admin_billing') }}" method="POST">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Generate Bill for Patient</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-2">
+                <label>Patient</label>
+                <select name="patient_id" class="form-control" required>
+                    {% for p in patients %}
+                    <option value="{{ p.id }}">{{ p.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-2"><label>Amount ($)</label><input type="number" step="0.01" name="amount" class="form-control" required></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Generate Bill</button>
+        </div>
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock %}

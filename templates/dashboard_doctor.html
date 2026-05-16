@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Dashboard{% endblock %}
+{% block content %}
+<div class="row mt-4">
+    <h2>Doctor Dashboard, Dr. {{ doctor.name }}</h2>
+    <hr>
+    
+    <h4>Your Upcoming Appointments</h4>
+    <table class="table table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Patient Name</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appt in appointments %}
+            <tr>
+                <td>{{ appt.patient.name }}</td>
+                <td>{{ appt.date }}</td>
+                <td>{{ appt.time }}</td>
+                <td>{{ appt.status }}</td>
+                <td>
+                    {% if appt.status == 'Scheduled' %}
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#prescriptionModal{{ appt.id }}">Attend / Prescribe</button>
+                    {% else %}
+                    <span class="badge bg-success">Completed</span>
+                    {% endif %}
+                </td>
+            </tr>
+            
+            <!-- Prescription Modal -->
+            <div class="modal fade" id="prescriptionModal{{ appt.id }}" tabindex="-1">
+              <div class="modal-dialog">
+                <form action="{{ url_for('add_prescription') }}" method="POST">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Prescribe for {{ appt.patient.name }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                      <input type="hidden" name="appointment_id" value="{{ appt.id }}">
+                      <input type="hidden" name="patient_id" value="{{ appt.patient_id }}">
+                      <div class="mb-3">
+                          <label>Diagnosis</label>
+                          <textarea name="diagnosis" class="form-control" required></textarea>
+                      </div>
+                      <div class="mb-3">
+                          <label>Medicines & Dosage</label>
+                          <textarea name="medicines" class="form-control" required></textarea>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Save Prescription</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            
+            {% else %}
+            <tr><td colspan="5" class="text-center">No upcoming appointments</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

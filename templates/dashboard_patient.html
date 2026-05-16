@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% block title %}Patient Dashboard{% endblock %}
+{% block content %}
+<div class="row mt-4">
+    <h2>Welcome, {{ patient.name }}</h2>
+    <hr>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">Profile Details</div>
+                <div class="card-body">
+                    <p><strong>Age:</strong> {{ patient.age }}</p>
+                    <p><strong>Gender:</strong> {{ patient.gender }}</p>
+                    <p><strong>Phone:</strong> {{ patient.phone }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <ul class="nav nav-tabs" id="patientTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#appointments" type="button">Appointments</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#prescriptions" type="button">Prescriptions</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#bills" type="button">Billing</button>
+              </li>
+            </ul>
+            
+            <div class="tab-content border p-3 bg-white" id="patientTabsContent">
+              <!-- Appointments -->
+              <div class="tab-pane fade show active" id="appointments" role="tabpanel">
+                  <table class="table table-sm">
+                      <thead>
+                          <tr><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr>
+                      </thead>
+                      <tbody>
+                          {% for appt in appointments %}
+                          <tr>
+                              <td>Dr. {{ appt.doctor.name }}</td>
+                              <td>{{ appt.date }}</td>
+                              <td>{{ appt.time }}</td>
+                              <td>{{ appt.status }}</td>
+                          </tr>
+                          {% else %}
+                          <tr><td colspan="4" class="text-center">No appointments found.</td></tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+              
+              <!-- Prescriptions -->
+              <div class="tab-pane fade" id="prescriptions" role="tabpanel">
+                  <table class="table table-sm">
+                      <thead>
+                          <tr><th>Date</th><th>Doctor</th><th>Diagnosis</th><th>Medicines</th></tr>
+                      </thead>
+                      <tbody>
+                          {% for pres in prescriptions %}
+                          <tr>
+                              <td>{{ pres.date }}</td>
+                              <td>Dr. {{ pres.doctor.name }}</td>
+                              <td>{{ pres.diagnosis }}</td>
+                              <td>{{ pres.medicines }}</td>
+                          </tr>
+                          {% else %}
+                          <tr><td colspan="4" class="text-center">No prescriptions found.</td></tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+              
+              <!-- Bills -->
+              <div class="tab-pane fade" id="bills" role="tabpanel">
+                  <table class="table table-sm">
+                      <thead>
+                          <tr><th>Date</th><th>Amount</th><th>Status</th></tr>
+                      </thead>
+                      <tbody>
+                          {% for bill in bills %}
+                          <tr>
+                              <td>{{ bill.date }}</td>
+                              <td>${{ bill.amount }}</td>
+                              <td>
+                                  {% if bill.status == 'Paid' %}
+                                  <span class="badge bg-success">Paid</span>
+                                  {% else %}
+                                  <span class="badge bg-danger">Pending</span>
+                                  {% endif %}
+                              </td>
+                          </tr>
+                          {% else %}
+                          <tr><td colspan="3" class="text-center">No bills found.</td></tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

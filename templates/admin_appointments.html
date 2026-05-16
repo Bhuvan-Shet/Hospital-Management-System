@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Manage Appointments{% endblock %}
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-8">
+        <h2>Manage Appointments</h2>
+    </div>
+    <div class="col-md-4 text-end">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addApptModal">Schedule Appointment</button>
+    </div>
+</div>
+<hr>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appt in appointments %}
+        <tr>
+            <td>{{ appt.patient.name }}</td>
+            <td>Dr. {{ appt.doctor.name }}</td>
+            <td>{{ appt.date }}</td>
+            <td>{{ appt.time }}</td>
+            <td>{{ appt.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Schedule Appointment Modal -->
+<div class="modal fade" id="addApptModal" tabindex="-1">
+    <div class="modal-dialog">
+    <form action="{{ url_for('admin_appointments') }}" method="POST">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Schedule New Appointment</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-2">
+                <label>Patient</label>
+                <select name="patient_id" class="form-control" required>
+                    {% for p in patients %}
+                    <option value="{{ p.id }}">{{ p.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-2">
+                <label>Doctor</label>
+                <select name="doctor_id" class="form-control" required>
+                    {% for d in doctors %}
+                    <option value="{{ d.id }}">Dr. {{ d.name }} - {{ d.specialization }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-2"><label>Date (YYYY-MM-DD)</label><input type="date" name="date" class="form-control" required></div>
+            <div class="mb-2"><label>Time (HH:MM)</label><input type="time" name="time" class="form-control" required></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Schedule</button>
+        </div>
+        </div>
+    </form>
+    </div>
+</div>
+{% endblock %}
